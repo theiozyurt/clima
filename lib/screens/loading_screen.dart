@@ -1,21 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:clima/services/location.dart';
 import 'package:http/http.dart';
-import 'package:clima/services/networking.dart';
-
-const apiKey = '785b6a1702e27432d7ddf648954cf50c';
-double? latitude;
-double? longitude;
+import 'location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:clima/services/weather.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
-
-Location getLoc = Location();
 
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
@@ -25,21 +19,39 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocationData() async {
-    await getLoc.getCurrentLocation();
-    latitude = getLoc.latitude;
-    longitude = getLoc.longitude;
-    NetworkHelper networkHelper = NetworkHelper(
-        url:
-            'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
-
-    print(latitude);
-    print(longitude);
-
-    var weatherData = await networkHelper.getData();
+    var weatherData = await WeatherModel().getLocationWeather();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationScreen(
+          locationWeather: weatherData,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+            child: SpinKitSpinningLines(
+              color: Colors.white,
+              size: 100.0,
+            ),
+          ),
+          Text(
+            'Getting the datas, \n Please Wait...',
+            style: TextStyle(
+              fontSize: 20.0,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
