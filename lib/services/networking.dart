@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'location.dart';
 
-const apiKey = '785b6a1702e27432d7ddf648954cf50c';
+const apiKey 
 double? latitude;
 double? longitude;
 
